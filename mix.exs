@@ -31,7 +31,7 @@ defmodule VerandertesLeben.MixProject do
       {:gettext, "~> 0.18.2"},
       {:timex, "~> 3.7.5"},
       {:hackney, "~> 1.17"},
-      {:httpoison, "~> 1.8"}
+      {:tesla, "~> 1.4"}
     ]
   end
 end

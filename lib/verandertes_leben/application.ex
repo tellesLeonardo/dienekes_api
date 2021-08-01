@@ -3,13 +3,13 @@ defmodule VerandertesLeben.Application do
 
   use Application
 
-  import VerandertesLeben.CheatFunctions, only: [route: 0, timestamp: 0]
+  import VerandertesLeben.CheatFunctions, only: [timestamp: 0]
 
   def start(_type, _args) do
     # socket_ports ++
     children = [
       cowboy(),
-      {VerandertesLeben.Sync, %{route: route(), timestamp_init: timestamp()} }
+      {VerandertesLeben.Sync, %{timestamp_init: timestamp()} }
     ]
 
     opts = [strategy: :one_for_one, name: SocketServer.Supervisor]
