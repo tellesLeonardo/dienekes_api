@@ -23,13 +23,10 @@ defmodule VerandertesLeben.MixProject do
   defp deps do
     [
       {:credo, ">= 0.0.0", only: [:dev, :test]},
-      {:ex_doc, ">= 0.0.0", only: :dev},
       {:plug, "~> 1.7"},
       {:cowboy, "~> 2.8"},
       {:plug_cowboy, ">= 2.4.0"},
       {:jason, "~> 1.1"},
-      {:gettext, "~> 0.18.2"},
-      {:timex, "~> 3.7.5"},
       {:hackney, "~> 1.17"},
       {:tesla, "~> 1.4"}
     ]

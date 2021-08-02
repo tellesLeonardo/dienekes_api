@@ -1,11 +1,10 @@
 defmodule VerandertesLeben.Router do
-  use Plug.Router
-  use Plug.ErrorHandler
-
-  # Dev mode TODO
-  use Plug.Debugger
+  @moduledoc false
 
   alias VerandertesLeben.Api.Load
+
+  use Plug.Router
+  use Plug.ErrorHandler
 
   plug(Plug.Parsers,
     parsers: [:urlencoded, {:json, json_decoder: Jason}]
@@ -14,23 +13,23 @@ defmodule VerandertesLeben.Router do
   plug(:match)
   plug(:dispatch)
 
-  # Send Messages
-  post "/api/" do
-    # {:ok, body, conn} = read_body(conn)
-
-    apply(Load, :worker, [conn, conn.params, opts])
+  get "/api/order_all" do
+    apply(Load, :order_all, [conn, conn.params, opts])
   end
 
-  # forward("/api/device", to: Devices)
+  get "/api/order_page/:page" do
+    apply(Load, :order_page, [conn, conn.params, page])
+  end
+
   match _ do
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(404, %{message: "Nothing to see here"} |> Jason.encode!())
+    |> send_resp(404, %{message: "Nada para ver aqui", status: false} |> Jason.encode!())
   end
 
   defp handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(conn.status, %{message: "Something went wrong"} |> Jason.encode!())
+    |> send_resp(conn.status, %{message: "Nada para ver aqui", status: false} |> Jason.encode!())
   end
 end

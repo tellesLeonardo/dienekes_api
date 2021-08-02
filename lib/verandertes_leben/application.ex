@@ -3,13 +3,11 @@ defmodule VerandertesLeben.Application do
 
   use Application
 
-  import VerandertesLeben.CheatFunctions, only: [timestamp: 0]
-
   def start(_type, _args) do
     # socket_ports ++
     children = [
       cowboy(),
-      {VerandertesLeben.Sync, %{timestamp_init: timestamp()} }
+      {VerandertesLeben, %{}}
     ]
 
     opts = [strategy: :one_for_one, name: SocketServer.Supervisor]
@@ -23,7 +21,6 @@ defmodule VerandertesLeben.Application do
       scheme: :http,
       plug: VerandertesLeben.Router,
       options: [
-        # dispatch: dispatch(),
         port: 4000
       ]
     }

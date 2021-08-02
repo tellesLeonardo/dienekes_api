@@ -1,14 +1,15 @@
 defmodule VerandertesLeben.Fetcher do
   @moduledoc """
-    Fetcher para fazer a buscas de APIs
+    Fetcher de routas com Tesla
   """
 
   use Tesla
 
-  plug Tesla.Middleware.BaseUrl, "http://challenge.dienekes.com.br"
-  plug Tesla.Middleware.JSON
-  plug Tesla.Middleware.Timeout, timeout: 30_000
-  plug Tesla.Middleware.Retry,
+  plug(Tesla.Middleware.BaseUrl, "http://challenge.dienekes.com.br")
+  plug(Tesla.Middleware.JSON)
+  plug(Tesla.Middleware.Timeout, timeout: 30_000)
+
+  plug(Tesla.Middleware.Retry,
     delay: 500,
     max_retries: 10,
     max_delay: 5_000,
@@ -17,14 +18,13 @@ defmodule VerandertesLeben.Fetcher do
       {:ok, _} -> false
       {:error, _} -> true
     end
+  )
 
-
-    @spec get_page(integer) :: Tesla.Env.t()
-    @doc """
-      Faz uma requisição de api por páginas
-    """
+  @spec get_page(integer) :: Tesla.Env.t()
+  @doc """
+    Executa requisições na 'api/number' para página especificada
+  """
   def get_page(pag \\ 1) do
-    get!("api/numbers?page=#{pag}" )
+    get!("api/numbers?page=#{pag}")
   end
-
 end
