@@ -33,12 +33,22 @@ defmodule VerandertesLeben do
   end
 
   @impl true
+  def handle_call({:desorder_page, page}, _from, %{return_api: return_api} = state) do
+    numbers =
+      return_api
+      |> Keyword.get(:"#{page}")
+
+    {:reply, numbers, state}
+  end
+
+  @impl true
   def handle_call(:order, _from, %{return_api: return_api} = state) do
     numbers =
       return_api
       |> Keyword.values()
       |> List.flatten()
       |> ordernate()
+
 
     {:reply, numbers, state}
   end
