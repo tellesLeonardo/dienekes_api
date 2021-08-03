@@ -24,12 +24,12 @@ defmodule VerandertesLeben.Router do
   match _ do
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(404, %{message: "Nada para ver aqui", status: false} |> Jason.encode!())
+    |> send_resp(404, Jason.encode!(%{message: "Nada para ver aqui", status: false}))
   end
 
   defp handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(conn.status, %{message: "Nada para ver aqui", status: false} |> Jason.encode!())
+    |> send_resp(conn.status, Jason.encode!(%{message: "Nada para ver aqui", status: false}))
   end
 end

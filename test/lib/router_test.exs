@@ -32,9 +32,8 @@ defmodule VerandertesLebenTest.RouterTest do
 
       numbers_my_order = Map.get(body_decode, "numbers")
 
-      numbers_sorted =
-        GenServer.call(:persistent_process, {:desorder_page, 1}, 30_000)
-        |> Enum.sort()
+      numbers_sorted = Enum.sort(GenServer.call(:persistent_process, {:desorder_page, 1}, 30_000))
+
 
       # Assert the response and status
       assert status == 200
@@ -50,13 +49,11 @@ defmodule VerandertesLebenTest.RouterTest do
 
   def request_waiting_finish(route) do
 
-    conn =
-      conn(:get, route, %{})
-      |> Router.call(@opts)
+    conn = Router.call(conn(:get, route, %{}), @opts)
 
-    Jason.decode!(conn.resp_body)
-    |> case  do
+    case Jason.decode!(conn.resp_body) do
       %{"numbers" => %{"message" => "sincronização de dados ainda sendo feita"}, "status" => _status} ->
+
         :timer.sleep(1_500)
         request_waiting_finish(route)
 

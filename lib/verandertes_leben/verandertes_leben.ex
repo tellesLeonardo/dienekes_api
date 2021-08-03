@@ -13,35 +13,33 @@ defmodule VerandertesLeben do
     GenServer.start_link(__MODULE__, args, name: :persistent_process)
   end
 
-  @impl true
+
   def init(data) do
     state = Map.merge(%{return_api: [], complet: false, page: 1}, data)
 
     {:ok, state, {:continue, :module_opening}}
   end
 
-  @impl true
+
   def handle_continue(:module_opening, state) do
     find_all_pages()
 
     {:noreply, state}
   end
 
-  @impl true
+
   def handle_call(_event, _from, %{complet: false} = state) do
     {:reply, %{message: "sincronização de dados ainda sendo feita"}, state}
   end
 
-  @impl true
+
   def handle_call({:desorder_page, page}, _from, %{return_api: return_api} = state) do
-    numbers =
-      return_api
-      |> Keyword.get(:"#{page}")
+    numbers = Keyword.get(return_api, :"#{page}")
 
     {:reply, numbers, state}
   end
 
-  @impl true
+
   def handle_call(:order, _from, %{return_api: return_api} = state) do
     numbers =
       return_api
@@ -53,7 +51,7 @@ defmodule VerandertesLeben do
     {:reply, numbers, state}
   end
 
-  @impl true
+
   def handle_call({:order_page, page}, _from, %{return_api: return_api} = state) do
     number =
       return_api
@@ -63,7 +61,7 @@ defmodule VerandertesLeben do
     {:reply, number, state}
   end
 
-  @impl true
+  
   def handle_info(
         :find_all_pages,
         %{complet: complet, page: page, return_api: return_api} = state
@@ -79,7 +77,7 @@ defmodule VerandertesLeben do
 
         find_all_pages()
 
-        state |> Map.merge(%{complet: complet, return_api: return_api, page: last_page})
+        Map.merge(state, %{complet: complet, return_api: return_api, page: last_page})
       end
 
     {:noreply, state}
@@ -92,14 +90,14 @@ defmodule VerandertesLeben do
 
     return =
       init..last
-      |> Task.async_stream(fn i -> request_all_pages(i) end, max_concurrency: 250)
+      |> Task.async_stream(fn i -> request_all_pages(i) end, max_concurrency: 250, timeout: 60_000 )
       |> Enum.to_list()
       |> Enum.reduce([], fn {:ok, x}, acc -> [x | acc] end)
       |> List.flatten()
 
-    return
-    |> List.first()
-    |> case do
+
+
+    case List.first(return) do
       {_, []} -> {true, return, last}
       {_, _resp} -> {false, return, last}
     end
@@ -107,7 +105,8 @@ defmodule VerandertesLeben do
 
   defp request_all_pages(pag) do
     return =
-      get_page(pag)
+      pag
+      |> get_page()
       |> Map.get(:body)
       |> Map.get("numbers")
 

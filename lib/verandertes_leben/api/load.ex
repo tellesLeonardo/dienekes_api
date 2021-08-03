@@ -7,11 +7,11 @@ defmodule VerandertesLeben.Api.Load do
   require Logger
 
   def order_all(conn, _body, _opts) do
-    Logger.info("#{inspect(__MODULE__)} ")
+    Logger.info("#{inspect(__MODULE__)} chamada de todas as paginas")
 
     numbers = GenServer.call(:persistent_process, :order, 60_000)
 
-    return = %{status: true, numbers: numbers} |> Jason.encode!()
+    return = Jason.encode!(%{status: true, numbers: numbers})
 
     send_resp(conn, 200, return)
   end
@@ -21,7 +21,7 @@ defmodule VerandertesLeben.Api.Load do
 
     numbers = GenServer.call(:persistent_process, {:order_page, page}, 30_000)
 
-    return = %{status: true, numbers: numbers} |> Jason.encode!()
+    return = Jason.encode!(%{status: true, numbers: numbers, page: page})
 
     send_resp(conn, 200, return)
   end

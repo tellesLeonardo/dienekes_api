@@ -7,8 +7,9 @@ defmodule VerandertesLebenTest.OrderFunctionsTest do
   describe "Ordenando dados em sequência" do
 
     test "teste de ordenar multiplos dados" do
-      return = ordernate([11.4, 1.3, 90.0, 10.5, 2.5, 2.6, 1.4])
-      assert return == [1.3,1.4,2.5,2.6,10.5, 11.4,90.0]
+      list_numbers = [11.4, 1.3, 90.0, 10.5, 2.5, 2.6, 1.4]
+
+      assert ordernate(list_numbers) == Enum.sort(list_numbers)
     end
 
     test "teste de ordenar um único dado" do
